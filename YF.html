@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>专插本英语 · 语法刷题</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #0f172a; color: #e2e8f0; min-height: 100vh;
+  display: flex; justify-content: center; align-items: flex-start; padding: 16px;
+}
+.app { width: 100%; max-width: 650px; }
+h1 { text-align: center; font-size: 20px; margin: 12px 0 16px; color: #f1f5f9; letter-spacing: 1px; }
+
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; background: #1e293b; border-radius: 12px; padding: 4px; }
+.tab {
+  flex: 1; text-align: center; padding: 10px 4px; border-radius: 10px; cursor: pointer;
+  font-size: 13px; font-weight: 500; transition: all .2s; color: #94a3b8; border: none; background: transparent;
+}
+.tab.active { background: #3b82f6; color: #fff; }
+.tab:hover:not(.active) { color: #e2e8f0; }
+
+.stats { display: flex; justify-content: space-around; margin-bottom: 12px; gap: 8px; }
+.stat { background: #1e293b; border-radius: 12px; padding: 10px 14px; text-align: center; flex: 1; }
+.stat-val { font-size: 22px; font-weight: 700; color: #38bdf8; }
+.stat-label { font-size: 10px; color: #94a3b8; margin-top: 2px; }
+
+.filter-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.filter-btn {
+  padding: 5px 12px; border-radius: 18px; border: 1px solid #475569; background: transparent;
+  color: #94a3b8; cursor: pointer; font-size: 12px; transition: all .15s; white-space: nowrap;
+}
+.filter-btn.active { background: #334155; border-color: #3b82f6; color: #e2e8f0; }
+.filter-btn:hover:not(.active) { color: #e2e8f0; border-color: #64748b; }
+
+.card { background: #1e293b; border-radius: 16px; padding: 24px; margin-bottom: 12px; }
+.topic-label { font-size: 13px; color: #60a5fa; margin-bottom: 6px; }
+.question { font-size: 17px; font-weight: 500; margin-bottom: 18px; line-height: 1.6; color: #f1f5f9; }
+.question .blank { color: #facc15; font-weight: 600; border-bottom: 2px dashed #facc15; padding: 0 4px; }
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  background: #0f172a; border: 2px solid #334155; border-radius: 12px; padding: 13px 18px;
+  cursor: pointer; font-size: 15px; transition: all .15s; text-align: left; width: 100%; color: #e2e8f0;
+}
+.opt:hover { border-color: #3b82f6; background: #1e293b; }
+.opt.correct { border-color: #22c55e; background: #052e16; color: #22c55e; }
+.opt.wrong { border-color: #ef4444; background: #450a0a; color: #ef4444; }
+.opt:disabled { pointer-events: none; opacity: .7; }
+.opt:disabled.correct { opacity: 1; }
+
+.feedback { text-align: center; margin-top: 14px; font-size: 14px; min-height: 22px; line-height: 1.6; }
+.feedback .right { color: #22c55e; font-weight: 600; }
+.feedback .wrong { color: #ef4444; }
+.feedback .exp { color: #94a3b8; font-size: 13px; display: block; margin-top: 4px; }
+
+.next-btn {
+  display: block; margin: 16px auto 0; padding: 12px 40px; border-radius: 10px;
+  border: none; background: #3b82f6; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: all .15s;
+}
+.next-btn:hover { background: #2563eb; }
+.next-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+.progress { margin-top: 12px; background: #1e293b; border-radius: 8px; height: 6px; overflow: hidden; }
+.progress-bar { height: 100%; background: #3b82f6; transition: width .3s; border-radius: 8px; }
+
+/* Pattern card for tab4 */
+.pattern-card { background: #1e293b; border-radius: 14px; padding: 18px; margin-bottom: 10px; }
+.pattern-name { font-size: 16px; font-weight: 600; color: #facc15; margin-bottom: 6px; }
+.pattern-meaning { font-size: 14px; color: #38bdf8; margin-bottom: 8px; }
+.pattern-example { font-size: 14px; color: #cbd5e1; line-height: 1.6; font-style: italic; background: #0f172a; padding: 10px 14px; border-radius: 8px; border-left: 3px solid #3b82f6; }
+
+.show-answer-btn {
+  display: inline-block; margin: 8px 0 0; padding: 5px 14px; border-radius: 8px;
+  border: 1px solid #475569; background: transparent; color: #94a3b8;
+  cursor: pointer; font-size: 12px; transition: all .15s;
+}
+.show-answer-btn:hover { border-color: #3b82f6; color: #e2e8f0; }
+
+.reset-btn {
+  display: block; margin: 8px auto 0; background: transparent; border: 1px solid #ef4444;
+  color: #ef4444; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; transition: all .15s;
+}
+.reset-btn:hover { background: #ef4444; color: #fff; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>📝 专插本英语 · 语法刷题</h1>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchMode('technique')">🎯 语法技巧</button>
+    <button class="tab" onclick="switchMode('pattern')">🔤 句式分析</button>
+    <button class="tab" onclick="switchMode('comprehensive')">📋 综合单选</button>
+    <button class="tab" onclick="switchMode('keypattern')">📖 关键句型</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="correct">0</div><div class="stat-label">✅ 正确</div></div>
+    <div class="stat"><div class="stat-val" id="total">0</div><div class="stat-label">📊 总题数</div></div>
+    <div class="stat"><div class="stat-val" id="streak">0</div><div class="stat-label">🔥 连对</div></div>
+    <div class="stat"><div class="stat-val" id="accuracy">-</div><div class="stat-label">📈 正确率</div></div>
+  </div>
+  <button class="reset-btn" onclick="resetStats()">🔄 重置战绩</button>
+
+  <div id="filterRow" class="filter-row"></div>
+
+  <div id="quizArea" class="card">
+    <div id="topicLabel" class="topic-label"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>下一题 →</button>
+  </div>
+
+  <div id="patternArea" style="display:none;"></div>
+
+  <div class="progress"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+</div>
+
+<script src="grammar_data.js"></script>
+<script>
+// ========== State ==========
+let mode = 'technique';
+let currentQuestion = null;
+let answered = false;
+let currentTopicId = null;
+let stats = JSON.parse(localStorage.getItem('yf_grammar_stats') || '{"correct":0,"total":0,"streak":0,"bestStreak":0}');
+let sessionStreak = 0;
+
+// ========== Helpers ==========
+function shuffle(a) { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; } return a; }
+function randInt(n) { return Math.floor(Math.random()*n); }
+
+function getDataSource() {
+  if (mode === 'technique') return GRAMMAR_TECHNIQUES;
+  if (mode === 'pattern') return SENTENCE_PATTERNS;
+  if (mode === 'comprehensive') return [{ id:0, title:'全部', desc:'', questions: COMPREHENSIVE_MCQ }];
+  return null;
+}
+
+function getAllQuestions() {
+  const src = getDataSource();
+  if (!src) return [];
+  if (mode === 'comprehensive') return COMPREHENSIVE_MCQ;
+  let all = [];
+  src.forEach(topic => {
+    if (!currentTopicId || topic.id === currentTopicId) {
+      topic.questions.forEach(q => all.push({ ...q, topicTitle: topic.title, topicId: topic.id }));
+    }
+  });
+  return all;
+}
+
+// ========== Stats ==========
+function updateStats() {
+  document.getElementById('correct').textContent = stats.correct;
+  document.getElementById('total').textContent = stats.total;
+  document.getElementById('streak').textContent = sessionStreak;
+  const acc = stats.total > 0 ? Math.round(stats.correct/stats.total*100) + '%' : '-';
+  document.getElementById('accuracy').textContent = acc;
+  localStorage.setItem('yf_grammar_stats', JSON.stringify(stats));
+}
+
+function resetStats() {
+  if (confirm('确定要重置语法刷题的所有战绩数据吗？')) {
+    stats = { correct: 0, total: 0, streak: 0, bestStreak: 0 };
+    sessionStreak = 0;
+    localStorage.removeItem('yf_grammar_stats');
+    updateStats();
+  }
+}
+
+// ========== Mode Switch ==========
+function switchMode(m) {
+  mode = m;
+  currentTopicId = null;
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (i===0&&m==='technique')||(i===1&&m==='pattern')||(i===2&&m==='comprehensive')||(i===3&&m==='keypattern'));
+  });
+  document.getElementById('quizArea').style.display = (m === 'keypattern') ? 'none' : 'block';
+  document.getElementById('patternArea').style.display = (m === 'keypattern') ? 'block' : 'none';
+  if (m === 'keypattern') {
+    renderKeyPatterns();
+  } else {
+    renderFilter();
+    nextQuestion();
+  }
+}
+
+// ========== Filter Row ==========
+function renderFilter() {
+  const row = document.getElementById('filterRow');
+  row.innerHTML = '';
+  const src = getDataSource();
+  if (!src || src.length <= 1) { row.style.display = 'none'; return; }
+  row.style.display = 'flex';
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn active';
+  allBtn.textContent = '全部';
+  allBtn.onclick = function() {
+    document.querySelectorAll('#filterRow .filter-btn').forEach(b => b.classList.remove('active'));
+    allBtn.classList.add('active');
+    currentTopicId = null;
+    nextQuestion();
+  };
+  row.appendChild(allBtn);
+
+  src.forEach(topic => {
+    const cnt = topic.questions.length;
+    if (cnt === 0) return;
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.textContent = topic.title + ' (' + cnt + ')';
+    btn.onclick = function() {
+      document.querySelectorAll('#filterRow .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTopicId = topic.id;
+      nextQuestion();
+    };
+    row.appendChild(btn);
+  });
+}
+
+// ========== Question Generation ==========
+function genQuestion() {
+  const pool = getAllQuestions();
+  if (pool.length === 0) return null;
+  const q = pool[randInt(pool.length)];
+  const opts = shuffle(q.opts.map((o, i) => ({ text: o, idx: i })));
+  return {
+    questionText: q.q,
+    options: opts,
+    correctIdx: opts.findIndex(o => o.idx === q.ans),
+    answerText: q.opts[q.ans],
+    explanation: q.exp || '',
+    topicTitle: q.topicTitle || ''
+  };
+}
+
+function nextQuestion() {
+  answered = false;
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('nextBtn').disabled = true;
+
+  currentQuestion = genQuestion();
+  if (!currentQuestion) {
+    document.getElementById('question').textContent = '暂无题目';
+    return;
+  }
+
+  document.getElementById('topicLabel').textContent = currentQuestion.topicTitle;
+  document.getElementById('question').innerHTML = currentQuestion.questionText.replace(/____/g, '<span class="blank">______</span>');
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  currentQuestion.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = String.fromCharCode(65 + i) + '. ' + opt.text;
+    btn.onclick = function() { answer(i); };
+    optsDiv.appendChild(btn);
+  });
+}
+
+// ========== Answer ==========
+function answer(idx) {
+  if (answered) return;
+  answered = true;
+  const opts = document.querySelectorAll('.opt');
+  if (idx === currentQuestion.correctIdx) {
+    opts[idx].classList.add('correct');
+    stats.correct++;
+    stats.total++;
+    sessionStreak++;
+    if (sessionStreak > stats.bestStreak) stats.bestStreak = sessionStreak;
+    document.getElementById('feedback').innerHTML = '<span class="right">✅ 正确！</span>' +
+      (currentQuestion.explanation ? '<span class="exp">💡 ' + currentQuestion.explanation + '</span>' : '');
+  } else {
+    opts[idx].classList.add('wrong');
+    opts[currentQuestion.correctIdx].classList.add('correct');
+    stats.total++;
+    sessionStreak = 0;
+    document.getElementById('feedback').innerHTML = '<span class="wrong">❌ 错误！</span> 正确答案：<b>' + currentQuestion.answerText + '</b>' +
+      (currentQuestion.explanation ? '<span class="exp">💡 ' + currentQuestion.explanation + '</span>' : '');
+  }
+  opts.forEach(o => o.disabled = true);
+  document.getElementById('nextBtn').disabled = false;
+  updateStats();
+}
+
+// ========== Key Patterns (Tab4) ==========
+function renderKeyPatterns() {
+  const area = document.getElementById('patternArea');
+  area.innerHTML = '<h2 style="text-align:center;color:#f1f5f9;margin-bottom:16px;">📖 阅读中的30种关键句型</h2>' +
+    '<p style="text-align:center;color:#94a3b8;margin-bottom:20px;font-size:14px;">掌握这些句型，阅读理解不再难</p>';
+  KEY_PATTERNS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'pattern-card';
+    card.innerHTML = '<div class="pattern-name">' + p.id + '. ' + p.pattern + '</div>' +
+      '<div class="pattern-meaning">📌 ' + p.meaning + '</div>' +
+      '<div class="pattern-example">' + p.example + '</div>';
+    area.appendChild(card);
+  });
+}
+
+// ========== Init ==========
+updateStats();
+renderFilter();
+nextQuestion();
+</script>
+</body>
+</html>
